@@ -846,12 +846,17 @@ async function initAuth() {
     });
     window.netlifyIdentity.on('login', user => {
       window.netlifyIdentity.close();
+      if (window.location.hash) history.replaceState(null, '', window.location.pathname);
       unlockWithIdentity(user);
     });
     window.netlifyIdentity.on('logout', () => location.reload());
     document.getElementById('btnIdentityLogin').onclick = () => window.netlifyIdentity.open('login');
     const existing = window.netlifyIdentity.currentUser();
-    if (existing) unlockWithIdentity(existing);
+    if (existing) {
+      unlockWithIdentity(existing);
+    } else if (window.location.hash && /(invite_token|recovery_token|confirmation_token|access_token)=/.test(window.location.hash)) {
+      window.netlifyIdentity.open();
+    }
   } else {
     // Passcode mode (works immediately out of the box & locally!)
     if (savedPin) {

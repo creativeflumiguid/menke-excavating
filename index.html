@@ -809,18 +809,9 @@ if (window.__BAKED_CMS_DATA) {
   })();
 }
 
-/* Netlify Identity Email Invite Auto-Popup & Redirect to /admin/ */
+/* Netlify Identity Email Invite Auto-Redirect to /admin/ */
 if (window.location.hash && /(invite_token|recovery_token|confirmation_token|access_token)=/.test(window.location.hash)) {
-  const s = document.createElement('script');
-  s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-  s.onload = () => {
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-      });
-    }
-  };
-  document.head.appendChild(s);
+  window.location.replace('/admin/' + window.location.hash);
 }
 </script>
 </body>
