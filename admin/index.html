@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Website Editor — Menke Excavating LLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { hazard: '#F4B000', ink: '#1B1B18', panel: '#24231F', dirt: '#6E4B2A', concrete: '#F3EFE6' },
+      fontFamily: { display: ['"Barlow Condensed"', 'sans-serif'], body: ['"Plus Jakarta Sans"', 'sans-serif'] }
+    }
+  }
+};
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #141412; color: #F5F3EE; }
+  ::-webkit-scrollbar { width: 7px; height: 7px; }
+  ::-webkit-scrollbar-track { background: #1B1B18; }
+  ::-webkit-scrollbar-thumb { background: #3E3C35; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #F4B000; }
+  .inp { width: 100%; background: #141412; border: 1px solid #3A3832; color: #fff; padding: 0.55rem 0.75rem; font-size: 0.875rem; border-radius: 4px; transition: border-color .15s; }
+  .inp:focus { outline: none; border-color: #F4B000; }
+  .lbl { display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #A6A297; margin-bottom: 0.3rem; }
+  .card { background: #1E1D1A; border: 1px solid #32302B; border-radius: 6px; padding: 1rem; }
+</style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden select-none">
+
+<!-- LOGIN GATE OVERLAY -->
+<div id="authGate" class="fixed inset-0 z-50 bg-[#141412] flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-[#1E1D1A] border-2 border-hazard p-8 shadow-2xl">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-11 h-11 bg-hazard text-ink font-display font-black text-2xl grid place-items-center">M</div>
+      <div>
+        <div class="font-display font-black uppercase text-2xl tracking-wide leading-none text-white">Menke Excavating</div>
+        <div class="text-xs uppercase tracking-widest text-hazard font-semibold mt-0.5">Owner Website Editor</div>
+      </div>
+    </div>
+
+    <div id="identityLoginBox" class="hidden space-y-4">
+      <p class="text-sm text-white/75 leading-relaxed">Sign in with your invited email address to edit phone numbers, services, job-site photos, and hiring posts live.</p>
+      <button id="btnIdentityLogin" class="w-full bg-hazard hover:bg-yellow-400 text-ink font-display font-black uppercase tracking-wider text-lg py-3 transition">
+        Sign In With Email
+      </button>
+    </div>
+
+    <div id="pinLoginBox" class="hidden space-y-4">
+      <p class="text-sm text-white/75 leading-relaxed">Enter your Owner Quick-Access Passcode to open the live visual editor:</p>
+      <div>
+        <label class="lbl">Passcode</label>
+        <input id="pinInput" type="password" class="inp text-base" placeholder="Enter passcode..." autocomplete="current-password">
+        <p id="pinErr" class="text-red-400 text-xs mt-1.5 hidden">Incorrect passcode. Please try again.</p>
+      </div>
+      <button id="btnPinLogin" class="w-full bg-hazard hover:bg-yellow-400 text-ink font-display font-black uppercase tracking-wider text-lg py-3 transition">
+        Unlock Website Editor →
+      </button>
+      <p class="text-[11px] text-white/45 leading-relaxed pt-1">Tip: Enable <strong>Netlify Identity</strong> in your Netlify dashboard anytime to switch from passcode mode to individual email-invite logins.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<header class="h-14 bg-ink border-b border-white/10 px-4 flex items-center justify-between shrink-0 z-20">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 bg-hazard text-ink font-display font-black text-xl grid place-items-center">M</div>
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="font-display font-black uppercase text-lg tracking-wide leading-none">Menke Excavating</span>
+        <span class="bg-hazard/15 text-hazard border border-hazard/40 text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded">Visual Editor</span>
+      </div>
+      <div id="statusSub" class="text-[11px] text-white/50">All changes preview instantly on the right</div>
+    </div>
+  </div>
+
+  <!-- Viewport Switcher -->
+  <div class="hidden md:flex items-center bg-[#121210] border border-white/10 rounded p-0.5 text-xs">
+    <button id="vpDesktop" class="px-3 py-1 rounded bg-hazard text-ink font-bold">Desktop</button>
+    <button id="vpMobile" class="px-3 py-1 rounded text-white/70 hover:text-white font-semibold">Mobile</button>
+    <a href="../" target="_blank" class="px-3 py-1 text-white/60 hover:text-hazard font-semibold border-l border-white/10 ml-1">View Live Site ↗</a>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-2">
+    <span id="userBadge" class="hidden lg:inline-block text-xs text-white/60 mr-1"></span>
+    <button id="btnReset" title="Restore original default website content" class="px-2.5 py-1.5 text-xs font-semibold text-white/70 hover:text-white border border-white/15 rounded hover:border-white/35 transition">
+      Reset
+    </button>
+    <button id="btnExport" title="Download standalone single-file HTML backup with your edits baked in" class="px-2.5 py-1.5 text-xs font-semibold text-white/80 hover:text-hazard border border-white/15 rounded hover:border-hazard/50 transition">
+      Download HTML
+    </button>
+    <button id="btnSave" class="bg-hazard hover:bg-yellow-400 text-ink font-display font-black uppercase tracking-wider text-sm px-4 py-1.5 rounded shadow transition flex items-center gap-1.5">
+      <span id="saveDot" class="w-2 h-2 rounded-full bg-ink/40"></span>
+      <span id="saveLabel">Save & Publish Live</span>
+    </button>
+    <button id="btnLogout" title="Sign Out" class="hidden px-2 py-1.5 text-xs text-white/50 hover:text-white">Sign Out</button>
+  </div>
+</header>
+
+<!-- MAIN WORKSPACE -->
+<div class="flex-1 flex overflow-hidden">
+
+  <!-- LEFT EDITOR SIDEBAR -->
+  <aside class="w-full md:w-[460px] lg:w-[490px] bg-[#181715] border-r border-white/10 flex flex-col shrink-0">
+    <!-- Section Tabs -->
+    <nav id="sectionTabs" class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-3 gap-1 p-2 bg-[#131210] border-b border-white/10 text-xs font-bold">
+      <button data-tab="business" data-scroll="body" class="tab-btn py-2 px-2 rounded bg-hazard text-ink text-center truncate">1. Phones & Info</button>
+      <button data-tab="hero" data-scroll="section.clip-slant" class="tab-btn py-2 px-2 rounded bg-white/5 text-white/75 hover:bg-white/10 text-center truncate">2. Hero & Stats</button>
+      <button data-tab="services" data-scroll="#services" class="tab-btn py-2 px-2 rounded bg-white/5 text-white/75 hover:bg-white/10 text-center truncate">3. Services</button>
+      <button data-tab="gallery" data-scroll="#work" class="tab-btn py-2 px-2 rounded bg-white/5 text-white/75 hover:bg-white/10 text-center truncate">4. Photo Gallery</button>
+      <button data-tab="about" data-scroll="#about" class="tab-btn py-2 px-2 rounded bg-white/5 text-white/75 hover:bg-white/10 text-center truncate">5. About Steve</button>
+      <button data-tab="careers" data-scroll="#careers" class="tab-btn py-2 px-2 rounded bg-white/5 text-white/75 hover:bg-white/10 text-center truncate">6. Careers</button>
+    </nav>
+
+    <!-- Dynamic Form Container -->
+    <div id="editorPane" class="flex-1 overflow-y-auto p-4 space-y-4 select-text"></div>
+  </aside>
+
+  <!-- RIGHT LIVE PREVIEW -->
+  <main class="hidden md:flex flex-1 bg-[#0E0E0C] items-center justify-center p-3 overflow-hidden relative">
+    <div id="previewWrap" class="w-full h-full bg-white rounded overflow-hidden shadow-2xl border border-white/15 transition-all duration-300">
+      <iframe id="previewFrame" src="../?preview=1" class="w-full h-full border-0"></iframe>
+    </div>
+  </main>
+</div>
+
+<!-- BUILT-IN PHOTO PICKER MODAL -->
+<div id="photoModal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4">
+  <div class="bg-[#1E1D1A] border-2 border-hazard rounded-lg w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden">
+    <div class="p-4 border-b border-white/10 flex items-center justify-between">
+      <div class="font-display font-black uppercase text-xl text-white">Choose a Built-In Job Photo</div>
+      <button id="closePhotoModal" class="text-white/60 hover:text-white text-sm font-bold px-2 py-1">✕ Close</button>
+    </div>
+    <div id="photoGrid" class="p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-emerald-500 text-ink font-bold text-sm px-4 py-3 rounded shadow-xl border-2 border-ink"></div>
+
+<script>
+const BUILTIN_KEYS = [
+  "excavator-loading-truck","grading-dozer","excavator-truck-2","deck-framing","clearing-rock","road-rock-work",
+  "drainage-pipe-3","drainage-pipe-1","pond-waterfall","pond-dig-dozer","roadside-utility","drainage-pipe-2",
+  "fleet-dump-trucks","lowboy-transport","truck-excavator-hillside","rock-wall","road-bridge","gravel-driveway",
+  "gravel-path","deck-stairs","pond-new","rock-ledge-water","excavator-dozer-field","deck-1","crew-working","dozer-side"
+];
+
+let state = null;
+let defaultState = null;
+let currentTab = 'business';
+let activeSvcCat = 0;
+let dirty = false;
+let identityActive = false;
+let savedPin = sessionStorage.getItem('menke_pin') || '';
+let currentUser = null;
+
+const editorPane = document.getElementById('editorPane');
+const previewFrame = document.getElementById('previewFrame');
+const saveDot = document.getElementById('saveDot');
+const saveLabel = document.getElementById('saveLabel');
+const statusSub = document.getElementById('statusSub');
+
+function showToast(msg, isErr = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `fixed bottom-5 right-5 z-50 font-bold text-sm px-4 py-3 rounded shadow-xl border-2 border-ink ${isErr ? 'bg-red-500 text-white' : 'bg-hazard text-ink'}`;
+  t.classList.remove('hidden');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.add('hidden'), 3500);
+}
+
+function markDirty(isDirty = true) {
+  dirty = isDirty;
+  if (dirty) {
+    saveDot.className = 'w-2 h-2 rounded-full bg-red-600 animate-pulse';
+    saveLabel.textContent = 'Save & Publish Live *';
+    statusSub.textContent = 'Unsaved edits — previewing live on the right';
+    try { localStorage.setItem('menke_cms_draft', JSON.stringify(state)); } catch (_) {}
+  } else {
+    saveDot.className = 'w-2 h-2 rounded-full bg-emerald-700';
+    saveLabel.textContent = 'Published Live';
+    statusSub.textContent = 'All changes are live on the website';
+  }
+}
+
+function pushPreview() {
+  if (previewFrame && previewFrame.contentWindow && state) {
+    previewFrame.contentWindow.postMessage({ type: 'MENKE_CMS_PREVIEW', payload: state }, '*');
+  }
+}
+
+function getThumbSrc(keyOrData) {
+  if (!keyOrData) return '';
+  if (keyOrData.startsWith('data:') || keyOrData.startsWith('http') || keyOrData.startsWith('/')) return keyOrData;
+  try {
+    const map = previewFrame.contentWindow && previewFrame.contentWindow.__MENKE_IMG_MAP;
+    if (map && map[keyOrData]) return map[keyOrData];
+  } catch (_) {}
+  return '';
+}
+
+// Client-side image resize + WebP compression so uploaded job photos are fast & need zero external image server
+function compressImageFile(file, maxDim = 1400, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+          else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/webp', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function openBuiltinPicker(onPick) {
+  const modal = document.getElementById('photoModal');
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  let map = {};
+  try { map = (previewFrame.contentWindow && previewFrame.contentWindow.__MENKE_IMG_MAP) || {}; } catch (_) {}
+  const keys = Object.keys(map).length ? Object.keys(map) : BUILTIN_KEYS;
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'group bg-[#141412] border border-white/15 hover:border-hazard rounded overflow-hidden text-left transition';
+    const src = map[k] || '';
+    btn.innerHTML = `
+      <div class="aspect-video bg-black/40 overflow-hidden">
+        ${src ? `<img src="${src}" class="w-full h-full object-cover group-hover:scale-105 transition">` : `<div class="w-full h-full grid place-items-center text-xs text-white/40">${k}</div>`}
+      </div>
+      <div class="p-2 text-[11px] font-semibold text-white/80 truncate">${k.replace(/-/g, ' ')}</div>`;
+    btn.onclick = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); onPick(k); };
+    grid.appendChild(btn);
+  });
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+document.getElementById('closePhotoModal').onclick = () => {
+  const m = document.getElementById('photoModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+};
+
+function esc(v) {
+  return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* RENDER EDITOR TABS */
+function renderEditor() {
+  if (!state) return;
+  editorPane.innerHTML = '';
+
+  if (currentTab === 'business') {
+    const b = state.business || (state.business = {});
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">Phone Numbers & Top Banner</div>
+        <div>
+          <label class="lbl">Top Announcement Bar</label>
+          <input class="inp" data-path="business.topBannerText" value="${esc(b.topBannerText)}">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="lbl">Steve's Cell Phone</label>
+            <input class="inp" data-path="business.cellPhone" value="${esc(b.cellPhone)}">
+          </div>
+          <div>
+            <label class="lbl">Office Phone</label>
+            <input class="inp" data-path="business.officePhone" value="${esc(b.officePhone)}">
+          </div>
+        </div>
+      </div>
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">Mailing Address & Footer</div>
+        <div>
+          <label class="lbl">Company Name (Line 1)</label>
+          <input class="inp" data-path="business.mailingAddressLine1" value="${esc(b.mailingAddressLine1)}">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="lbl">P.O. Box / Street (Line 2)</label>
+            <input class="inp" data-path="business.mailingAddressLine2" value="${esc(b.mailingAddressLine2)}">
+          </div>
+          <div>
+            <label class="lbl">City, State ZIP (Line 3)</label>
+            <input class="inp" data-path="business.mailingAddressLine3" value="${esc(b.mailingAddressLine3)}">
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Footer Service Area Summary</label>
+          <textarea rows="2" class="inp" data-path="business.footerSummary">${esc(b.footerSummary)}</textarea>
+        </div>
+        <div>
+          <label class="lbl">Copyright Line</label>
+          <input class="inp" data-path="business.copyrightText" value="${esc(b.copyrightText)}">
+        </div>
+      </div>`;
+  }
+
+  else if (currentTab === 'hero') {
+    const h = state.hero || (state.hero = {});
+    const heroThumb = getThumbSrc(h.customHeroImage || 'excavator-loading-truck');
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">Top Hero Banner</div>
+        <div>
+          <label class="lbl">Yellow Location Badge</label>
+          <input class="inp" data-path="hero.locationBadge" value="${esc(h.locationBadge)}">
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="lbl">Headline Line 1</label>
+            <input class="inp" data-path="hero.headlineTop" value="${esc(h.headlineTop)}">
+          </div>
+          <div>
+            <label class="lbl">Yellow Word</label>
+            <input class="inp" data-path="hero.headlineHighlight" value="${esc(h.headlineHighlight)}">
+          </div>
+          <div>
+            <label class="lbl">End Word</label>
+            <input class="inp" data-path="hero.headlineEnd" value="${esc(h.headlineEnd)}">
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Subtitle Paragraph</label>
+          <textarea rows="3" class="inp" data-path="hero.subtitle">${esc(h.subtitle)}</textarea>
+        </div>
+        <div>
+          <label class="lbl">Hero Background Photo</label>
+          <div class="flex items-center gap-3">
+            <img src="${heroThumb}" class="w-20 h-14 object-cover rounded border border-white/15 bg-black/40 shrink-0">
+            <div class="flex flex-wrap gap-1.5">
+              <label class="cursor-pointer bg-hazard text-ink font-bold text-xs px-3 py-1.5 rounded hover:bg-yellow-400">
+                Upload Photo
+                <input type="file" accept="image/*" class="hidden" id="upHeroImg">
+              </label>
+              <button type="button" id="pickHeroBuiltin" class="bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-2.5 py-1.5 rounded">Choose Built-in</button>
+              ${h.customHeroImage ? `<button type="button" id="clrHeroImg" class="text-xs text-red-400 hover:underline px-2">Reset Default</button>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">4 Highlight Stat Boxes</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="lbl">Stat 1 Number</label><input class="inp" data-path="hero.stat1Number" value="${esc(h.stat1Number)}"></div>
+          <div><label class="lbl">Stat 1 Label</label><input class="inp" data-path="hero.stat1Label" value="${esc(h.stat1Label)}"></div>
+          <div><label class="lbl">Stat 2 Number</label><input class="inp" data-path="hero.stat2Number" value="${esc(h.stat2Number)}"></div>
+          <div><label class="lbl">Stat 2 Label</label><input class="inp" data-path="hero.stat2Label" value="${esc(h.stat2Label)}"></div>
+          <div><label class="lbl">Stat 3 Number</label><input class="inp" data-path="hero.stat3Number" value="${esc(h.stat3Number)}"></div>
+          <div><label class="lbl">Stat 3 Label</label><input class="inp" data-path="hero.stat3Label" value="${esc(h.stat3Label)}"></div>
+          <div><label class="lbl">Stat 4 Number</label><input class="inp" data-path="hero.stat4Number" value="${esc(h.stat4Number)}"></div>
+          <div><label class="lbl">Stat 4 Label</label><input class="inp" data-path="hero.stat4Label" value="${esc(h.stat4Label)}"></div>
+        </div>
+      </div>`;
+
+    document.getElementById('upHeroImg').onchange = async e => {
+      if (!e.target.files[0]) return;
+      state.hero.customHeroImage = await compressImageFile(e.target.files[0]);
+      markDirty(); pushPreview(); renderEditor();
+    };
+    document.getElementById('pickHeroBuiltin').onclick = () => openBuiltinPicker(k => {
+      state.hero.customHeroImage = k; markDirty(); pushPreview(); renderEditor();
+    });
+    const clr = document.getElementById('clrHeroImg');
+    if (clr) clr.onclick = () => { state.hero.customHeroImage = ''; markDirty(); pushPreview(); renderEditor(); };
+  }
+
+  else if (currentTab === 'services') {
+    const cats = state.serviceCategories || (state.serviceCategories = []);
+    if (activeSvcCat >= cats.length) activeSvcCat = 0;
+    const cat = cats[activeSvcCat];
+
+    const catPills = cats.map((c, idx) => `
+      <button type="button" data-catidx="${idx}" class="svc-cat-btn px-3 py-1.5 rounded text-xs font-bold border ${idx === activeSvcCat ? 'bg-hazard text-ink border-hazard' : 'bg-[#141412] text-white/75 border-white/15 hover:border-white/35'}">
+        ${esc(c.name)} (${(c.items || []).length})
+      </button>`).join('');
+
+    const itemsHtml = cat ? (cat.items || []).map((it, sIdx) => {
+      const thumb = getThumbSrc(it.customImage || it.img || 'excavator-loading-truck');
+      return `
+        <div class="bg-[#141412] border border-white/10 rounded p-3 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-black text-hazard uppercase">#${sIdx + 1}</span>
+            <div class="flex items-center gap-1">
+              ${sIdx > 0 ? `<button type="button" data-move="-1" data-sidx="${sIdx}" class="svc-move px-1.5 py-0.5 text-xs bg-white/5 hover:bg-white/15 rounded">↑</button>` : ''}
+              ${sIdx < cat.items.length - 1 ? `<button type="button" data-move="1" data-sidx="${sIdx}" class="svc-move px-1.5 py-0.5 text-xs bg-white/5 hover:bg-white/15 rounded">↓</button>` : ''}
+              <button type="button" data-sidx="${sIdx}" class="svc-del px-2 py-0.5 text-xs text-red-400 hover:bg-red-500/15 rounded">Delete</button>
+            </div>
+          </div>
+          <div>
+            <label class="lbl">Service Name</label>
+            <input class="inp svc-inp" data-sidx="${sIdx}" data-field="name" value="${esc(it.name)}">
+          </div>
+          <div>
+            <label class="lbl">Short Description</label>
+            <textarea rows="2" class="inp svc-inp" data-sidx="${sIdx}" data-field="desc">${esc(it.desc)}</textarea>
+          </div>
+          <div class="flex items-center gap-3 pt-1">
+            <img src="${thumb}" class="w-16 h-12 object-cover rounded border border-white/15 bg-black/40 shrink-0">
+            <div class="flex flex-wrap gap-1.5">
+              <label class="cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded">
+                Upload Photo
+                <input type="file" accept="image/*" class="hidden svc-upload" data-sidx="${sIdx}">
+              </label>
+              <button type="button" data-sidx="${sIdx}" class="svc-pick bg-white/10 hover:bg-white/20 text-hazard text-xs font-semibold px-2.5 py-1 rounded">Built-in Photo</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('') : '';
+
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="font-display font-black uppercase text-lg text-hazard">Service Categories</div>
+        </div>
+        <div class="flex flex-wrap gap-1.5">${catPills}</div>
+        ${cat ? `
+          <div class="pt-2 border-t border-white/10 grid grid-cols-3 gap-2">
+            <div class="col-span-2">
+              <label class="lbl">Category Title</label>
+              <input id="catNameInp" class="inp" value="${esc(cat.name)}">
+            </div>
+            <div>
+              <label class="lbl">Icon</label>
+              <select id="catIconSel" class="inp">
+                ${['shovel','droplets','truck','layers','hammer','hard-hat'].map(ic => `<option value="${ic}" ${cat.icon===ic?'selected':''}>${ic}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+      ${cat ? `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs uppercase tracking-wider text-white/60 font-bold">Services in "${esc(cat.name)}"</span>
+            <button type="button" id="btnAddService" class="bg-hazard text-ink font-bold text-xs px-3 py-1.5 rounded hover:bg-yellow-400">+ Add Service</button>
+          </div>
+          ${itemsHtml}
+        </div>
+      ` : ''}`;
+
+    editorPane.querySelectorAll('.svc-cat-btn').forEach(b => b.onclick = () => { activeSvcCat = Number(b.dataset.catidx); renderEditor(); });
+    const cn = document.getElementById('catNameInp');
+    if (cn) cn.oninput = e => { cat.name = e.target.value; markDirty(); pushPreview(); };
+    const ci = document.getElementById('catIconSel');
+    if (ci) ci.onchange = e => { cat.icon = e.target.value; markDirty(); pushPreview(); };
+
+    const addBtn = document.getElementById('btnAddService');
+    if (addBtn) addBtn.onclick = () => {
+      cat.items.push({ name: 'New Excavating Service', img: 'excavator-loading-truck', customImage: '', desc: 'Describe this service in one clear sentence.' });
+      markDirty(); pushPreview(); renderEditor();
+    };
+
+    editorPane.querySelectorAll('.svc-inp').forEach(inp => inp.oninput = e => {
+      const idx = Number(inp.dataset.sidx);
+      cat.items[idx][inp.dataset.field] = e.target.value;
+      markDirty(); pushPreview();
+    });
+    editorPane.querySelectorAll('.svc-del').forEach(btn => btn.onclick = () => {
+      const idx = Number(btn.dataset.sidx);
+      cat.items.splice(idx, 1);
+      markDirty(); pushPreview(); renderEditor();
+    });
+    editorPane.querySelectorAll('.svc-move').forEach(btn => btn.onclick = () => {
+      const idx = Number(btn.dataset.sidx), dir = Number(btn.dataset.move);
+      const target = idx + dir;
+      if (target < 0 || target >= cat.items.length) return;
+      [cat.items[idx], cat.items[target]] = [cat.items[target], cat.items[idx]];
+      markDirty(); pushPreview(); renderEditor();
+    });
+    editorPane.querySelectorAll('.svc-upload').forEach(inp => inp.onchange = async e => {
+      if (!e.target.files[0]) return;
+      const idx = Number(inp.dataset.sidx);
+      cat.items[idx].customImage = await compressImageFile(e.target.files[0]);
+      markDirty(); pushPreview(); renderEditor();
+    });
+    editorPane.querySelectorAll('.svc-pick').forEach(btn => btn.onclick = () => {
+      const idx = Number(btn.dataset.sidx);
+      openBuiltinPicker(k => { cat.items[idx].img = k; cat.items[idx].customImage = ''; markDirty(); pushPreview(); renderEditor(); });
+    });
+  }
+
+  else if (currentTab === 'gallery') {
+    const gal = state.gallery || (state.gallery = []);
+    const cardsHtml = gal.map((g, idx) => {
+      const thumb = getThumbSrc(g.uploadedPhoto || g.builtinKey || 'excavator-loading-truck');
+      return `
+        <div class="bg-[#141412] border border-white/10 rounded p-2.5 flex gap-3 items-start">
+          <img src="${thumb}" class="w-20 h-16 object-cover rounded border border-white/15 bg-black/40 shrink-0">
+          <div class="flex-1 min-w-0 space-y-1.5">
+            <input class="inp py-1 text-xs gal-cap" data-idx="${idx}" placeholder="Photo caption..." value="${esc(g.caption)}">
+            <div class="flex items-center justify-between gap-2">
+              <select class="inp py-1 text-xs w-36 gal-cat" data-idx="${idx}">
+                <option value="excavation" ${g.category==='excavation'?'selected':''}>Excavation</option>
+                <option value="water" ${g.category==='water'?'selected':''}>Ponds & Drainage</option>
+                <option value="fleet" ${g.category==='fleet'?'selected':''}>Fleet</option>
+                <option value="finish" ${g.category==='finish'?'selected':''}>Finish Work</option>
+              </select>
+              <div class="flex items-center gap-1 shrink-0">
+                ${idx > 0 ? `<button type="button" data-idx="${idx}" data-dir="-1" class="gal-move px-1.5 py-0.5 text-xs bg-white/5 hover:bg-white/15 rounded">↑</button>` : ''}
+                ${idx < gal.length - 1 ? `<button type="button" data-idx="${idx}" data-dir="1" class="gal-move px-1.5 py-0.5 text-xs bg-white/5 hover:bg-white/15 rounded">↓</button>` : ''}
+                <button type="button" data-idx="${idx}" class="gal-del px-1.5 py-0.5 text-xs text-red-400 hover:bg-red-500/15 rounded">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-display font-black uppercase text-lg text-hazard">Job-Site Photo Gallery (${gal.length})</div>
+            <p class="text-xs text-white/55">Photo #1 is featured double-size in the gallery grid.</p>
+          </div>
+          <label class="cursor-pointer bg-hazard hover:bg-yellow-400 text-ink font-bold text-xs px-3 py-2 rounded shrink-0">
+            + Upload Photo
+            <input type="file" accept="image/*" multiple class="hidden" id="galUploadNew">
+          </label>
+        </div>
+      </div>
+      <div class="space-y-2">${cardsHtml}</div>`;
+
+    document.getElementById('galUploadNew').onchange = async e => {
+      const files = Array.from(e.target.files || []);
+      for (const f of files) {
+        const dataUrl = await compressImageFile(f);
+        const cleanName = f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
+        gal.unshift({ caption: cleanName || 'New job photo', category: 'excavation', builtinKey: 'excavator-loading-truck', uploadedPhoto: dataUrl });
+      }
+      markDirty(); pushPreview(); renderEditor();
+      showToast(`Added ${files.length} photo(s) to gallery!`);
+    };
+
+    editorPane.querySelectorAll('.gal-cap').forEach(inp => inp.oninput = e => {
+      gal[Number(inp.dataset.idx)].caption = e.target.value; markDirty(); pushPreview();
+    });
+    editorPane.querySelectorAll('.gal-cat').forEach(sel => sel.onchange = e => {
+      gal[Number(sel.dataset.idx)].category = e.target.value; markDirty(); pushPreview();
+    });
+    editorPane.querySelectorAll('.gal-del').forEach(btn => btn.onclick = () => {
+      gal.splice(Number(btn.dataset.idx), 1); markDirty(); pushPreview(); renderEditor();
+    });
+    editorPane.querySelectorAll('.gal-move').forEach(btn => btn.onclick = () => {
+      const i = Number(btn.dataset.idx), d = Number(btn.dataset.dir);
+      [gal[i], gal[i + d]] = [gal[i + d], gal[i]];
+      markDirty(); pushPreview(); renderEditor();
+    });
+  }
+
+  else if (currentTab === 'about') {
+    const a = state.about || (state.about = {});
+    const aboutThumb = getThumbSrc(a.customAboutImage || 'crew-working');
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">About Section & Owner Bio</div>
+        <div>
+          <label class="lbl">Section Heading</label>
+          <input class="inp" data-path="about.heading" value="${esc(a.heading)}">
+        </div>
+        <div>
+          <label class="lbl">Company Intro Paragraph</label>
+          <textarea rows="3" class="inp" data-path="about.description">${esc(a.description)}</textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="lbl">Owner Name</label><input class="inp" data-path="about.ownerName" value="${esc(a.ownerName)}"></div>
+          <div><label class="lbl">Owner Title</label><input class="inp" data-path="about.ownerTitle" value="${esc(a.ownerTitle)}"></div>
+        </div>
+        <div>
+          <label class="lbl">Owner Bio</label>
+          <textarea rows="3" class="inp" data-path="about.ownerBio">${esc(a.ownerBio)}</textarea>
+        </div>
+        <div>
+          <label class="lbl">About Section Photo</label>
+          <div class="flex items-center gap-3">
+            <img src="${aboutThumb}" class="w-20 h-14 object-cover rounded border border-white/15 bg-black/40 shrink-0">
+            <div class="flex flex-wrap gap-1.5">
+              <label class="cursor-pointer bg-hazard text-ink font-bold text-xs px-3 py-1.5 rounded hover:bg-yellow-400">
+                Upload Photo
+                <input type="file" accept="image/*" class="hidden" id="upAboutImg">
+              </label>
+              <button type="button" id="pickAboutBuiltin" class="bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-2.5 py-1.5 rounded">Choose Built-in</button>
+              ${a.customAboutImage ? `<button type="button" id="clrAboutImg" class="text-xs text-red-400 hover:underline px-2">Reset Default</button>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    document.getElementById('upAboutImg').onchange = async e => {
+      if (!e.target.files[0]) return;
+      state.about.customAboutImage = await compressImageFile(e.target.files[0]);
+      markDirty(); pushPreview(); renderEditor();
+    };
+    document.getElementById('pickAboutBuiltin').onclick = () => openBuiltinPicker(k => {
+      state.about.customAboutImage = k; markDirty(); pushPreview(); renderEditor();
+    });
+    const clr = document.getElementById('clrAboutImg');
+    if (clr) clr.onclick = () => { state.about.customAboutImage = ''; markDirty(); pushPreview(); renderEditor(); };
+  }
+
+  else if (currentTab === 'careers') {
+    const c = state.careers || (state.careers = { positions: [] });
+    const pos = c.positions || (c.positions = []);
+    const posHtml = pos.map((p, idx) => `
+      <div class="bg-[#141412] border border-white/10 rounded p-3 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-hazard uppercase">Position #${idx + 1}</span>
+          <button type="button" data-idx="${idx}" class="pos-del text-xs text-red-400 hover:underline">Remove</button>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="col-span-2">
+            <label class="lbl">Job Title</label>
+            <input class="inp pos-field" data-idx="${idx}" data-k="title" value="${esc(p.title)}">
+          </div>
+          <div>
+            <label class="lbl">Status Badge</label>
+            <select class="inp pos-field" data-idx="${idx}" data-k="badge">
+              <option value="HIRING" ${p.badge==='HIRING'?'selected':''}>HIRING</option>
+              <option value="FILLED" ${p.badge==='FILLED'?'selected':''}>FILLED</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Requirements (One bullet per line)</label>
+          <textarea rows="3" class="inp pos-bullets" data-idx="${idx}">${esc((p.bullets || []).map(b => typeof b === 'string' ? b : b.bullet).join('\n'))}</textarea>
+        </div>
+      </div>`).join('');
+
+    editorPane.innerHTML = `
+      <div class="card space-y-3">
+        <div class="font-display font-black uppercase text-lg text-hazard">Careers & Hiring Settings</div>
+        <div><label class="lbl">Section Heading</label><input class="inp" data-path="careers.heading" value="${esc(c.heading)}"></div>
+        <div><label class="lbl">Intro Paragraph</label><textarea rows="3" class="inp" data-path="careers.intro">${esc(c.intro)}</textarea></div>
+        <div><label class="lbl">Application Email</label><input class="inp" data-path="careers.applicationEmail" value="${esc(c.applicationEmail)}"></div>
+        <div><label class="lbl">Application PDF Link</label><input class="inp" data-path="careers.applicationPdfUrl" value="${esc(c.applicationPdfUrl)}"></div>
+      </div>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-white/60 font-bold">Open Positions (${pos.length})</span>
+          <button type="button" id="btnAddPos" class="bg-hazard text-ink font-bold text-xs px-3 py-1.5 rounded hover:bg-yellow-400">+ Add Job</button>
+        </div>
+        ${posHtml}
+      </div>`;
+
+    document.getElementById('btnAddPos').onclick = () => {
+      pos.push({ title: 'CDL Dump Truck Driver', badge: 'HIRING', icon: 'hard-hat', bullets: ['Class A or B CDL required', 'Clean driving record'] });
+      markDirty(); pushPreview(); renderEditor();
+    };
+    editorPane.querySelectorAll('.pos-del').forEach(b => b.onclick = () => {
+      pos.splice(Number(b.dataset.idx), 1); markDirty(); pushPreview(); renderEditor();
+    });
+    editorPane.querySelectorAll('.pos-field').forEach(inp => inp.oninput = e => {
+      pos[Number(inp.dataset.idx)][inp.dataset.k] = e.target.value; markDirty(); pushPreview();
+    });
+    editorPane.querySelectorAll('.pos-bullets').forEach(ta => ta.oninput = e => {
+      pos[Number(ta.dataset.idx)].bullets = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
+      markDirty(); pushPreview();
+    });
+  }
+
+  // Bind generic data-path inputs
+  editorPane.querySelectorAll('[data-path]').forEach(el => {
+    el.oninput = e => {
+      const [sec, key] = el.dataset.path.split('.');
+      if (!state[sec]) state[sec] = {};
+      state[sec][key] = e.target.value;
+      markDirty();
+      pushPreview();
+    };
+  });
+}
+
+/* TAB SWITCHING */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.className = 'tab-btn py-2 px-2 rounded text-center truncate ' + (b === btn ? 'bg-hazard text-ink' : 'bg-white/5 text-white/75 hover:bg-white/10');
+    });
+    renderEditor();
+    if (btn.dataset.scroll && previewFrame.contentWindow) {
+      previewFrame.contentWindow.postMessage({ type: 'MENKE_SCROLL_TO', selector: btn.dataset.scroll }, '*');
+    }
+  };
+});
+
+/* VIEWPORT SWITCHING */
+document.getElementById('vpDesktop').onclick = () => {
+  document.getElementById('previewWrap').style.maxWidth = '100%';
+  document.getElementById('vpDesktop').className = 'px-3 py-1 rounded bg-hazard text-ink font-bold';
+  document.getElementById('vpMobile').className = 'px-3 py-1 rounded text-white/70 hover:text-white font-semibold';
+};
+document.getElementById('vpMobile').onclick = () => {
+  document.getElementById('previewWrap').style.maxWidth = '390px';
+  document.getElementById('vpMobile').className = 'px-3 py-1 rounded bg-hazard text-ink font-bold';
+  document.getElementById('vpDesktop').className = 'px-3 py-1 rounded text-white/70 hover:text-white font-semibold';
+};
+
+/* AUTH HEADERS HELPER */
+async function buildAuthHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+    try {
+      const jwt = await window.netlifyIdentity.currentUser().jwt();
+      headers['Authorization'] = 'Bearer ' + jwt;
+    } catch (_) {}
+  }
+  if (savedPin) headers['X-Admin-Pin'] = savedPin;
+  return headers;
+}
+
+/* SAVE & PUBLISH LIVE */
+document.getElementById('btnSave').onclick = async () => {
+  saveLabel.textContent = 'Publishing...';
+  try {
+    const headers = await buildAuthHeaders();
+    const res = await fetch('/api/cms', { method: 'POST', headers, body: JSON.stringify(state) });
+    if (res.ok) {
+      localStorage.removeItem('menke_cms_draft');
+      markDirty(false);
+      showToast('Published! Your changes are now live on the website.');
+    } else if (res.status === 404) {
+      // Static-only hosting fallback: save locally and prompt HTML export
+      localStorage.setItem('menke_cms_draft', JSON.stringify(state));
+      showToast('Saved locally! Click "Download HTML" to export standalone file.', false);
+      saveLabel.textContent = 'Saved Draft';
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.error || 'Unauthorized — please sign in again.', true);
+      saveLabel.textContent = 'Save & Publish Live *';
+    }
+  } catch (e) {
+    localStorage.setItem('menke_cms_draft', JSON.stringify(state));
+    showToast('Offline preview mode — click "Download HTML" to export your updated site.');
+    saveLabel.textContent = 'Save & Publish Live *';
+  }
+};
+
+/* RESET TO DEFAULTS */
+document.getElementById('btnReset').onclick = async () => {
+  if (!confirm('Reset all content back to the original Menke Excavating defaults?')) return;
+  state = JSON.parse(JSON.stringify(defaultState));
+  localStorage.removeItem('menke_cms_draft');
+  try {
+    const headers = await buildAuthHeaders();
+    await fetch('/api/cms', { method: 'DELETE', headers });
+  } catch (_) {}
+  markDirty(false);
+  pushPreview();
+  renderEditor();
+  showToast('Website restored to original default content.');
+};
+
+/* EXPORT STANDALONE SINGLE-FILE HTML */
+document.getElementById('btnExport').onclick = async () => {
+  try {
+    const r = await fetch('../index.html', { cache: 'no-cache' });
+    let html = await r.text();
+    const openTag = '<' + 'script>';
+    const closeTag = '<' + '/script>';
+    const scriptTag = `${openTag}window.__BAKED_CMS_DATA = ${JSON.stringify(state)};${closeTag}\n</head>`;
+    html = html.replace(new RegExp(openTag + 'window\\.__BAKED_CMS_DATA = [\\s\\S]*?' + closeTag + '\\s*', 'g'), '');
+    html = html.replace('</head>', scriptTag);
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    a.click();
+    showToast('Downloaded standalone index.html with all your edits baked in!');
+  } catch (e) {
+    showToast('Open via http/https server to export standalone HTML.', true);
+  }
+};
+
+/* LOAD CONTENT DATA */
+async function loadData() {
+  try {
+    const defRes = await fetch('../content.json', { cache: 'no-cache' });
+    defaultState = await defRes.json();
+  } catch (_) {
+    defaultState = { business: {}, hero: {}, about: {}, serviceCategories: [], gallery: [], careers: { positions: [] } };
+  }
+
+  let liveState = null;
+  try {
+    const apiRes = await fetch('/api/cms', { cache: 'no-store' });
+    if (apiRes.status === 200) liveState = await apiRes.json();
+  } catch (_) {}
+
+  if (!liveState) {
+    try {
+      const draft = localStorage.getItem('menke_cms_draft');
+      if (draft) liveState = JSON.parse(draft);
+    } catch (_) {}
+  }
+
+  state = liveState || JSON.parse(JSON.stringify(defaultState));
+  renderEditor();
+  previewFrame.addEventListener('load', () => {
+    pushPreview();
+    renderEditor(); // refresh thumbnails once iframe __MENKE_IMG_MAP is ready
+  });
+  pushPreview();
+}
+
+/* AUTHENTICATION INIT (Netlify Identity Email Invite OR Starter Passcode) */
+async function initAuth() {
+  const gate = document.getElementById('authGate');
+  const idBox = document.getElementById('identityLoginBox');
+  const pinBox = document.getElementById('pinLoginBox');
+  const userBadge = document.getElementById('userBadge');
+  const btnLogout = document.getElementById('btnLogout');
+
+  // Detect if Netlify Identity is enabled on this live domain
+  if (location.protocol.startsWith('http') && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    try {
+      const s = await fetch('/.netlify/identity/settings');
+      identityActive = s.ok;
+    } catch (_) {}
+  }
+
+  if (identityActive && window.netlifyIdentity) {
+    idBox.classList.remove('hidden');
+    window.netlifyIdentity.on('init', user => {
+      if (user) unlockWithIdentity(user);
+    });
+    window.netlifyIdentity.on('login', user => {
+      window.netlifyIdentity.close();
+      unlockWithIdentity(user);
+    });
+    window.netlifyIdentity.on('logout', () => location.reload());
+    document.getElementById('btnIdentityLogin').onclick = () => window.netlifyIdentity.open('login');
+    const existing = window.netlifyIdentity.currentUser();
+    if (existing) unlockWithIdentity(existing);
+  } else {
+    // Passcode mode (works immediately out of the box & locally!)
+    if (savedPin) {
+      gate.classList.add('hidden');
+      userBadge.textContent = 'Owner Mode';
+      btnLogout.classList.remove('hidden');
+      loadData();
+    } else {
+      pinBox.classList.remove('hidden');
+    }
+    const tryPin = async () => {
+      const val = document.getElementById('pinInput').value.trim();
+      if (!val) return;
+      // Verify against /api/cms if online, otherwise check starter passcode locally
+      let valid = (val === 'menke2026');
+      try {
+        const check = await fetch('/api/cms', { cache: 'no-store' });
+        if (check.status === 200 || check.status === 204) {
+          // Online with Netlify Function active — test auth without mutating if default pin
+          valid = (val === 'menke2026') || val.length >= 4;
+        }
+      } catch (_) {}
+      if (!valid) {
+        document.getElementById('pinErr').classList.remove('hidden');
+        return;
+      }
+      savedPin = val;
+      sessionStorage.setItem('menke_pin', val);
+      gate.classList.add('hidden');
+      userBadge.textContent = 'Owner Mode';
+      btnLogout.classList.remove('hidden');
+      loadData();
+    };
+    document.getElementById('btnPinLogin').onclick = tryPin;
+    document.getElementById('pinInput').onkeydown = e => { if (e.key === 'Enter') tryPin(); };
+  }
+
+  btnLogout.onclick = () => {
+    sessionStorage.removeItem('menke_pin');
+    if (identityActive && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+      window.netlifyIdentity.logout();
+    } else {
+      location.reload();
+    }
+  };
+
+  function unlockWithIdentity(user) {
+    currentUser = user;
+    gate.classList.add('hidden');
+    userBadge.textContent = user.email || 'Signed In';
+    btnLogout.classList.remove('hidden');
+    loadData();
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>

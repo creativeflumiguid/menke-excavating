@@ -1,0 +1,144 @@
+{
+  "business": {
+    "topBannerText": "Family Owned Since 2002 • Licensed & Insured • Free Estimates",
+    "cellPhone": "816-214-7352",
+    "officePhone": "816-450-3230",
+    "mailingAddressLine1": "Menke Excavating LLC",
+    "mailingAddressLine2": "P.O. Box 53",
+    "mailingAddressLine3": "Camden Point, Missouri 64018",
+    "footerSummary": "Serving Commercial, Residential & Agricultural customers throughout Greater Kansas City, the surrounding areas, and St. Joseph.",
+    "copyrightText": "© 2026 Menke Excavating LLC. All rights reserved."
+  },
+  "hero": {
+    "locationBadge": "Greater Kansas City & St. Joseph",
+    "headlineTop": "We Move",
+    "headlineHighlight": "Dirt.",
+    "headlineEnd": "Right.",
+    "subtitle": "Excavating, grading and demolition for commercial, residential and agricultural customers. Owner Steve Menke brings 25+ years of experience to every job.",
+    "customHeroImage": "",
+    "stat1Number": "2002",
+    "stat1Label": "Established",
+    "stat2Number": "25+",
+    "stat2Label": "Years Experience",
+    "stat3Number": "20+",
+    "stat3Label": "Services Offered",
+    "stat4Number": "$0",
+    "stat4Label": "Estimates Are Free"
+  },
+  "about": {
+    "heading": "Customer Loyalty Is Our Number One Goal.",
+    "description": "Menke Excavating was established in 2002 as a family owned business. We are always striving to provide quality services that meet, and even exceed, customer expectations.",
+    "ownerName": "Steve Menke",
+    "ownerTitle": "Owner & Operator",
+    "ownerBio": "Steve has been in the excavating business for over 25 years and has experience and expertise in many areas. When you call, you talk to the man running the job.",
+    "customAboutImage": ""
+  },
+  "serviceCategories": [
+    {
+      "name": "Site Prep & Excavation",
+      "icon": "shovel",
+      "items": [
+        { "name": "Excavating & Grading", "img": "excavator-loading-truck", "customImage": "", "desc": "Cut, fill and grade to plan with the right machine for the soil and the site." },
+        { "name": "Building Pads", "img": "grading-dozer", "customImage": "", "desc": "Level, compacted pads ready for homes, shops, barns and commercial buildings." },
+        { "name": "Basements", "img": "excavator-truck-2", "customImage": "", "desc": "Clean basement digs to depth, with spoils hauled off or spread on site." },
+        { "name": "Footers", "img": "excavator-truck-2", "customImage": "", "desc": "Accurate footer trenches so your foundation starts square and on grade." },
+        { "name": "Piers", "img": "deck-framing", "customImage": "", "desc": "Pier holes for decks, posts and structural supports." },
+        { "name": "Clearing", "img": "clearing-rock", "customImage": "", "desc": "Trees, brush, stumps and rock removed so the ground is ready to build." },
+        { "name": "Demolition", "img": "road-rock-work", "customImage": "", "desc": "Old structures and slabs taken down, broken up and hauled away." }
+      ]
+    },
+    {
+      "name": "Water & Drainage",
+      "icon": "droplets",
+      "items": [
+        { "name": "Drainage Improvements", "img": "drainage-pipe-3", "customImage": "", "desc": "Fix standing water and wet yards with grading, swales and buried drain lines." },
+        { "name": "Storm Drains", "img": "drainage-pipe-1", "customImage": "", "desc": "Storm drain structures and pipe installed to move water where it belongs." },
+        { "name": "Ponds and Water Falls", "img": "pond-waterfall", "customImage": "", "desc": "Farm ponds and natural rock water features built to hold and look right." },
+        { "name": "Terraces", "img": "pond-dig-dozer", "customImage": "", "desc": "Terraces that slow runoff and protect fields from erosion." },
+        { "name": "Water Lines", "img": "roadside-utility", "customImage": "", "desc": "Trenching and installation for new water service lines." },
+        { "name": "Underground Utilities", "img": "drainage-pipe-2", "customImage": "", "desc": "Trenching for buried utilities, done carefully and backfilled clean." }
+      ]
+    },
+    {
+      "name": "Hauling & Materials",
+      "icon": "truck",
+      "items": [
+        { "name": "Hauling", "img": "fleet-dump-trucks", "customImage": "", "desc": "Our own dump trucks move dirt, rock and debris on your schedule." },
+        { "name": "Trucking Services", "img": "lowboy-transport", "customImage": "", "desc": "Equipment and material transport across the Kansas City area." },
+        { "name": "Top Soil", "img": "grading-dozer", "customImage": "", "desc": "Quality top soil delivered and spread for lawns, gardens and finish grades." },
+        { "name": "Dirt Work", "img": "truck-excavator-hillside", "customImage": "", "desc": "Moving, shaping and compacting dirt for projects of any size." }
+      ]
+    },
+    {
+      "name": "Finish & Hardscape",
+      "icon": "layers",
+      "items": [
+        { "name": "Rock Walls", "img": "rock-wall", "customImage": "", "desc": "Natural rock retaining walls that hold back soil and last for decades." },
+        { "name": "Concrete", "img": "road-bridge", "customImage": "", "desc": "Concrete work to go with your site prep, from flatwork to footings." },
+        { "name": "Yard Grades", "img": "gravel-driveway", "customImage": "", "desc": "Final yard grades that drain away from the house and are ready for seed or sod." }
+      ]
+    }
+  ],
+  "gallery": [
+    { "caption": "Excavator loading a dump truck", "category": "fleet", "builtinKey": "truck-excavator-hillside", "uploadedPhoto": "" },
+    { "caption": "Loading out spoils", "category": "excavation", "builtinKey": "excavator-loading-truck", "uploadedPhoto": "" },
+    { "caption": "Pond & waterfall", "category": "water", "builtinKey": "pond-waterfall", "uploadedPhoto": "" },
+    { "caption": "Drainage system install", "category": "water", "builtinKey": "drainage-pipe-1", "uploadedPhoto": "" },
+    { "caption": "Rock retaining wall", "category": "finish", "builtinKey": "rock-wall", "uploadedPhoto": "" },
+    { "caption": "Our dump truck fleet", "category": "fleet", "builtinKey": "fleet-dump-trucks", "uploadedPhoto": "" },
+    { "caption": "Digging a new pond", "category": "water", "builtinKey": "pond-dig-dozer", "uploadedPhoto": "" },
+    { "caption": "Gravel path", "category": "finish", "builtinKey": "gravel-path", "uploadedPhoto": "" },
+    { "caption": "Clearing & rock work", "category": "excavation", "builtinKey": "clearing-rock", "uploadedPhoto": "" },
+    { "caption": "Storm drain structure", "category": "water", "builtinKey": "drainage-pipe-2", "uploadedPhoto": "" },
+    { "caption": "Roadside utility work", "category": "excavation", "builtinKey": "roadside-utility", "uploadedPhoto": "" },
+    { "caption": "Deck & stairs project", "category": "finish", "builtinKey": "deck-stairs", "uploadedPhoto": "" },
+    { "caption": "Grading with dozer", "category": "excavation", "builtinKey": "grading-dozer", "uploadedPhoto": "" },
+    { "caption": "Finished farm pond", "category": "water", "builtinKey": "pond-new", "uploadedPhoto": "" },
+    { "caption": "Equipment transport", "category": "fleet", "builtinKey": "lowboy-transport", "uploadedPhoto": "" },
+    { "caption": "Bridge approach work", "category": "excavation", "builtinKey": "road-bridge", "uploadedPhoto": "" },
+    { "caption": "Natural rock & water feature", "category": "water", "builtinKey": "rock-ledge-water", "uploadedPhoto": "" },
+    { "caption": "Drain pipe bedding", "category": "water", "builtinKey": "drainage-pipe-3", "uploadedPhoto": "" },
+    { "caption": "New gravel drive", "category": "finish", "builtinKey": "gravel-driveway", "uploadedPhoto": "" },
+    { "caption": "Rock placement along roadway", "category": "excavation", "builtinKey": "road-rock-work", "uploadedPhoto": "" },
+    { "caption": "Pier & framing work", "category": "finish", "builtinKey": "deck-framing", "uploadedPhoto": "" },
+    { "caption": "Excavator & dozer", "category": "fleet", "builtinKey": "excavator-dozer-field", "uploadedPhoto": "" },
+    { "caption": "Finished deck", "category": "finish", "builtinKey": "deck-1", "uploadedPhoto": "" }
+  ],
+  "careers": {
+    "heading": "Want to Run Iron With Us?",
+    "intro": "Menke Excavating, LLC is a growing utility and dirt work company and a family owned business serving commercial and residential customers. We specialize in storm drain improvement, water line repair and replacement, and excavation.",
+    "applicationEmail": "forest.watkins@yahoo.com",
+    "applicationPdfUrl": "https://www.menkeexcavating.com/assets/docs/EmploymentapplicationFillable2.62112933.pdf",
+    "positions": [
+      {
+        "title": "Laborer",
+        "badge": "HIRING",
+        "icon": "shovel",
+        "bullets": [
+          "Experience with water lines, storm water and concrete work preferred",
+          "Not required to apply. We will train the right candidate"
+        ]
+      },
+      {
+        "title": "Operator",
+        "badge": "HIRING",
+        "icon": "construction",
+        "bullets": [
+          "Minimum 2 years' experience operating",
+          "Willing and able to labor as projects require"
+        ]
+      },
+      {
+        "title": "Foreman",
+        "badge": "HIRING",
+        "icon": "hard-hat",
+        "bullets": [
+          "Minimum 5 years' experience leading a crew",
+          "Minimum 2 years' experience operating",
+          "Experience reading plans and setting grade"
+        ]
+      }
+    ]
+  }
+}
+

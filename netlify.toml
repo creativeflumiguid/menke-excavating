@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/content.json"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+
